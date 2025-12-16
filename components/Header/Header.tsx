@@ -8,7 +8,7 @@ export const Header = ({
   onMyList
 }: HeaderProps) => {
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-slate-50 border-b border-slate-200">
+    <header className="flex items-center justify-between px-8 py-4 bg-slate-200 border-b border-slate-300">
       {/* 로고 */}
       <h1 className="text-xl font-semibold text-slate-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
         Mandalart
@@ -45,7 +45,7 @@ export const Header = ({
         ) : (
           <button
             onClick={onLogin}
-            className="px-4 py-2 text-sm bg-indigo-400 text-white rounded-lg hover:bg-indigo-500 transition-colors"
+            className="px-4 py-2 text-sm bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
           >
             로그인
           </button>
