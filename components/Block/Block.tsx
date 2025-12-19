@@ -5,6 +5,7 @@ export const Block = ({
   values,
   onChange,
   isCenter = false,
+  disabled = false,
 }: BlockProps) => {
   return (
     <div className={`
@@ -18,6 +19,7 @@ export const Block = ({
           onChange={(value) => onChange?.(index, value)}
           isCenter={index === 4}
           isMainCenter={isCenter && index === 4}
+          disabled={disabled}
         />
       ))}
     </div>

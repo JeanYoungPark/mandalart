@@ -1,14 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Header } from '@/components/Header';
-import { Grid } from '@/components/Grid';
+
+const Grid = dynamic(() => import('@/components/Grid').then(mod => mod.Grid), {
+  ssr: false,
+  loading: () => <div className="h-[70vh] aspect-square" />
+});
+
+const STORAGE_KEY = 'mandalart-data';
 
 export default function Home() {
-  // 9개 블록 x 9개 셀 = 81개 값
   const [values, setValues] = useState<string[][]>(
     Array.from({ length: 9 }, () => Array(9).fill(''))
   );
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // localStorage에서 불러오기
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      setValues(JSON.parse(saved));
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // localStorage에 저장
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+    }
+  }, [values, isLoaded]);
 
   const handleChange = (blockIndex: number, cellIndex: number, value: string) => {
     setValues(prev => {
@@ -38,7 +61,7 @@ export default function Home() {
       <Header />
 
       <main className="flex-1 flex items-center justify-center p-4 min-h-0">
-        <Grid values={values} onChange={handleChange} />
+        {isLoaded && <Grid values={values} onChange={handleChange} />}
       </main>
     </div>
   );

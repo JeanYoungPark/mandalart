@@ -4,4 +4,5 @@ export interface CellProps {
   isCenter?: boolean;
   isMainCenter?: boolean;
   placeholder?: string;
+  disabled?: boolean;
 }

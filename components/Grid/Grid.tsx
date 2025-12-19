@@ -1,7 +1,7 @@
 import { Block } from '../Block';
 import { GridProps } from './Grid.types';
 
-export const Grid = ({ values, onChange }: GridProps) => {
+export const Grid = ({ values, onChange, disabled = false }: GridProps) => {
   // 블록 순서: 0-8 (왼쪽 위부터 오른쪽으로)
   // 중앙 블록은 index 4
   return (
@@ -12,6 +12,7 @@ export const Grid = ({ values, onChange }: GridProps) => {
           values={values[blockIndex] || []}
           onChange={(cellIndex, value) => onChange?.(blockIndex, cellIndex, value)}
           isCenter={blockIndex === 4}
+          disabled={disabled}
         />
       ))}
     </div>

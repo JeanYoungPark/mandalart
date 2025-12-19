@@ -5,7 +5,8 @@ export const Cell = ({
   onChange,
   isCenter = false,
   isMainCenter = false,
-  placeholder = ''
+  placeholder = '',
+  disabled = false
 }: CellProps) => {
   const getCellStyle = () => {
     if (isMainCenter) {
@@ -39,11 +40,13 @@ export const Cell = ({
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
         placeholder={placeholder}
+        disabled={disabled}
         className={`
           w-full h-full resize-none text-center text-xs
           bg-transparent outline-none
           leading-tight pt-[35%]
           ${getTextStyle()}
+          ${disabled ? 'cursor-default' : 'cursor-text'}
         `}
       />
     </div>
