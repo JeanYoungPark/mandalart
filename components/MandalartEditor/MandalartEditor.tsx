@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { Grid } from '@/components/Grid';
 
 const STORAGE_KEY = 'mandalart-data';
@@ -39,6 +40,15 @@ export const MandalartEditor = () => {
     }
   }, [year, title, valuesString, isLoaded]);
 
+  const handleReset = () => {
+    if (confirm('모든 내용을 초기화하시겠습니까?')) {
+      const currentYear = new Date().getFullYear();
+      setYear(currentYear);
+      setTitle('');
+      setValues(Array.from({ length: 9 }, () => Array(9).fill('')));
+    }
+  };
+
   const handleChange = (blockIndex: number, cellIndex: number, value: string) => {
     setValues(prev => {
       const newValues = prev.map(block => [...block]);
@@ -62,24 +72,33 @@ export const MandalartEditor = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2 rounded-xl shadow-sm mb-6">
-        <select
-          value={year}
-          onChange={(e) => setYear(Number(e.target.value))}
-          className="pl-2 pr-6 py-1 text-sm bg-transparent text-slate-600 outline-none cursor-pointer"
+      <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2 rounded-xl shadow-sm">
+          <select
+            value={year}
+            onChange={(e) => setYear(Number(e.target.value))}
+            className="pl-2 pr-6 py-1 text-sm bg-transparent text-slate-600 outline-none cursor-pointer"
+          >
+            {yearOptions.map((y) => (
+              <option key={y} value={y}>{y}년</option>
+            ))}
+          </select>
+          <span className="text-slate-300">|</span>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="제목을 입력하세요"
+            className="px-2 py-1 text-sm bg-transparent text-slate-700 placeholder:text-slate-400 outline-none w-48"
+          />
+        </div>
+        <button
+          onClick={handleReset}
+          className="p-2 bg-white/80 backdrop-blur rounded-xl shadow-sm text-slate-400 hover:text-slate-600 transition-colors"
+          title="초기화"
         >
-          {yearOptions.map((y) => (
-            <option key={y} value={y}>{y}년</option>
-          ))}
-        </select>
-        <span className="text-slate-300">|</span>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목을 입력하세요"
-          className="px-2 py-1 text-sm bg-transparent text-slate-700 placeholder:text-slate-400 outline-none w-48"
-        />
+          <RotateCcw size={18} />
+        </button>
       </div>
       <Grid values={values} onChange={handleChange} />
     </div>
