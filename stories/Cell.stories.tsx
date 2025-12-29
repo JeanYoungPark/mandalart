@@ -40,3 +40,19 @@ export const Center: Story = {
     isCenter: true,
   },
 };
+
+// 메인 중앙 셀 (중앙 블록의 중앙)
+export const MainCenter: Story = {
+  args: {
+    value: '2025 목표',
+    isMainCenter: true,
+  },
+};
+
+// 비활성화된 셀
+export const Disabled: Story = {
+  args: {
+    value: '수정 불가',
+    disabled: true,
+  },
+};

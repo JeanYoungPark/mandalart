@@ -40,3 +40,11 @@ export const CenterBlock: Story = {
     isCenter: true,
   },
 };
+
+// 비활성화된 블록
+export const Disabled: Story = {
+  args: {
+    values: ['목표1', '목표2', '목표3', '목표4', '중앙', '목표6', '목표7', '목표8', '목표9'],
+    disabled: true,
+  },
+};
