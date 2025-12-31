@@ -206,29 +206,29 @@ export const MandalartEditor = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex items-center gap-2 mb-6">
-        <div className="flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2 rounded-xl shadow-sm">
+        <div className="flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur px-4 py-2 rounded-xl shadow-sm">
           <select
             value={year}
             onChange={(e) => setYear(Number(e.target.value))}
-            className="pl-2 pr-6 py-1 text-sm bg-transparent text-slate-600 outline-none cursor-pointer"
+            className="pl-2 pr-6 py-1 text-sm bg-transparent text-slate-600 dark:text-slate-300 outline-none cursor-pointer"
           >
             {yearOptions.map((y) => (
-              <option key={y} value={y}>{y}년</option>
+              <option key={y} value={y} className="bg-white dark:bg-slate-800">{y}년</option>
             ))}
           </select>
-          <span className="text-slate-300">|</span>
+          <span className="text-slate-300 dark:text-slate-600">|</span>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="제목을 입력하세요"
-            className="px-2 py-1 text-sm bg-transparent text-slate-700 placeholder:text-slate-400 outline-none w-48"
+            className="px-2 py-1 text-sm bg-transparent text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none w-48"
           />
         </div>
         <div className="relative">
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="p-2 bg-white/80 backdrop-blur rounded-xl shadow-sm text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur rounded-xl shadow-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
             title="다운로드"
           >
             <Download size={18} />
@@ -239,16 +239,16 @@ export const MandalartEditor = () => {
                 className="fixed inset-0 z-10"
                 onClick={() => setShowExportMenu(false)}
               />
-              <div className="absolute top-full left-0 mt-1 min-w-[120px] bg-white/95 backdrop-blur rounded-xl shadow-lg border border-slate-200 overflow-hidden z-20">
+              <div className="absolute top-full left-0 mt-1 min-w-[120px] bg-white/95 dark:bg-slate-800/95 backdrop-blur rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden z-20">
                 <button
                   onClick={handleExportImage}
-                  className="w-full px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 transition-colors text-left whitespace-nowrap"
+                  className="w-full px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left whitespace-nowrap"
                 >
                   PNG 이미지
                 </button>
                 <button
                   onClick={handleExportPDF}
-                  className="w-full px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-100 transition-colors text-left whitespace-nowrap"
+                  className="w-full px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left whitespace-nowrap"
                 >
                   PDF 문서
                 </button>
@@ -258,7 +258,7 @@ export const MandalartEditor = () => {
         </div>
         <button
           onClick={handleReset}
-          className="p-2 bg-white/80 backdrop-blur rounded-xl shadow-sm text-slate-400 hover:text-slate-600 transition-colors"
+          className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur rounded-xl shadow-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           title="초기화"
         >
           <RotateCcw size={18} />
@@ -273,7 +273,7 @@ export const MandalartEditor = () => {
       {toast && (
         <div
           key={toastKey}
-          className="fixed bottom-8 left-1/2 px-4 py-2 bg-slate-800 text-white text-sm rounded-lg shadow-lg animate-[slideUp_0.3s_ease-out]"
+          className="fixed bottom-8 left-1/2 px-4 py-2 bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 text-sm rounded-lg shadow-lg animate-[slideUp_0.3s_ease-out]"
           style={{ transform: 'translateX(-50%)' }}
         >
           {toast}

@@ -10,7 +10,7 @@ export const Block = ({
   return (
     <div className={`
       grid grid-cols-3 gap-0.5 p-1.5 rounded-xl
-      ${isCenter ? 'bg-slate-300' : 'bg-slate-200'}
+      ${isCenter ? 'bg-slate-300 dark:bg-slate-600' : 'bg-slate-200 dark:bg-slate-700'}
     `}>
       {Array.from({ length: 9 }).map((_, index) => (
         <Cell

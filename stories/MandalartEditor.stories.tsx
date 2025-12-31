@@ -9,7 +9,7 @@ const meta: Meta<typeof MandalartEditor> = {
   },
   decorators: [
     (Story) => (
-      <div className="min-h-screen bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 flex items-center justify-center p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-8">
         <Story />
       </div>
     ),

@@ -10,12 +10,12 @@ export const Cell = ({
 }: CellProps) => {
   const getCellStyle = () => {
     if (isMainCenter) {
-      return 'bg-slate-600 border border-slate-700';
+      return 'bg-slate-600 dark:bg-slate-500 border border-slate-700 dark:border-slate-400';
     }
     if (isCenter) {
-      return 'bg-slate-100 border border-slate-300';
+      return 'bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600';
     }
-    return 'bg-white hover:bg-slate-100 border border-slate-200';
+    return 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600';
   };
 
   const getTextStyle = () => {
@@ -23,9 +23,9 @@ export const Cell = ({
       return 'font-semibold text-white placeholder:text-slate-300';
     }
     if (isCenter) {
-      return 'font-medium text-slate-700 placeholder:text-slate-400';
+      return 'font-medium text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500';
     }
-    return 'text-slate-700 placeholder:text-slate-400';
+    return 'text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500';
   };
 
   return (
