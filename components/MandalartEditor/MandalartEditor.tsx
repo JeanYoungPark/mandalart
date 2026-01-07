@@ -1,14 +1,28 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { RotateCcw, Download } from 'lucide-react';
+import { RotateCcw, Download, Loader2, Save } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Grid } from '@/components/Grid';
 
 const STORAGE_KEY = 'mandalart-data';
 
-export const MandalartEditor = () => {
+interface MandalartEditorProps {
+  mandalartId?: string;
+  initialYear?: number;
+  initialTitle?: string;
+  initialValues?: string[][];
+  onUpdate?: () => void;
+}
+
+export const MandalartEditor = ({
+  mandalartId,
+  initialYear,
+  initialTitle,
+  initialValues,
+  onUpdate,
+}: MandalartEditorProps = {}) => {
   const [year, setYear] = useState(0);
   const [yearOptions, setYearOptions] = useState<number[]>([]);
   const [title, setTitle] = useState('');
@@ -19,7 +33,9 @@ export const MandalartEditor = () => {
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [toast, setToast] = useState('');
   const [toastKey, setToastKey] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const showToast = (message: string) => {
@@ -31,38 +47,107 @@ export const MandalartEditor = () => {
     toastTimeoutRef.current = setTimeout(() => setToast(''), 2500);
   };
 
-  // localStorage에서 불러오기
+  // 초기 데이터 로드
   useEffect(() => {
     const currentYear = new Date().getFullYear();
     setYearOptions(Array.from({ length: 6 }, (_, i) => currentYear + i));
 
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const data = JSON.parse(saved);
-      setYear(data.year || currentYear);
-      setTitle(data.title || '');
-      setValues(data.values || Array.from({ length: 9 }, () => Array(9).fill('')));
+    // Props가 있으면 Props 사용 (로그인 사용자)
+    if (mandalartId && initialYear !== undefined) {
+      setYear(initialYear);
+      setTitle(initialTitle || '');
+      setValues(initialValues || Array.from({ length: 9 }, () => Array(9).fill('')));
     } else {
-      setYear(currentYear);
+      // Props가 없으면 localStorage 사용 (비로그인 사용자)
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        setYear(data.year || currentYear);
+        setTitle(data.title || '');
+        setValues(data.values || Array.from({ length: 9 }, () => Array(9).fill('')));
+      } else {
+        setYear(currentYear);
+      }
     }
     setIsLoaded(true);
-  }, []);
+  }, [mandalartId, initialYear, initialTitle, initialValues]);
 
-  // localStorage에 저장
+  // 데이터 저장 (비로그인 사용자만 자동 저장)
   const valuesString = JSON.stringify(values);
   useEffect(() => {
-    if (isLoaded) {
+    if (!isLoaded) return;
+
+    // 비로그인 사용자: localStorage에 자동 저장
+    if (!mandalartId) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ year, title, values }));
     }
-  }, [year, title, valuesString, isLoaded]);
+  }, [year, title, valuesString, isLoaded, mandalartId]);
 
-  const handleReset = () => {
-    if (confirm('모든 내용을 초기화하시겠습니까?')) {
-      const currentYear = new Date().getFullYear();
-      setYear(currentYear);
-      setTitle('');
-      setValues(Array.from({ length: 9 }, () => Array(9).fill('')));
+  // 수동 저장 (로그인 사용자)
+  const handleSave = async () => {
+    if (!mandalartId) return;
+
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/mandalarts/${mandalartId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ year, title, values }),
+      });
+
+      if (!response.ok) {
+        throw new Error('저장에 실패했습니다.');
+      }
+
+      showToast('저장되었습니다.');
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      showToast('저장에 실패했습니다.');
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const handleReset = async () => {
+    if (!confirm('모든 내용을 초기화하시겠습니까?')) return;
+
+    const currentYear = new Date().getFullYear();
+    const emptyValues = Array.from({ length: 9 }, () => Array(9).fill(''));
+
+    // 로그인 사용자: API로 초기화
+    if (mandalartId) {
+      try {
+        const response = await fetch(`/api/mandalarts/${mandalartId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            year: currentYear,
+            title: '',
+            values: emptyValues,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('초기화에 실패했습니다.');
+        }
+
+        if (onUpdate) {
+          onUpdate();
+        }
+      } catch (error) {
+        console.error('Reset error:', error);
+        showToast('초기화에 실패했습니다.');
+        return;
+      }
+    }
+
+    // 상태 업데이트
+    setYear(currentYear);
+    setTitle('');
+    setValues(emptyValues);
   };
 
   const handleExportImage = async () => {
@@ -256,6 +341,16 @@ export const MandalartEditor = () => {
             </>
           )}
         </div>
+        {mandalartId && (
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur rounded-xl shadow-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors disabled:opacity-50"
+            title="저장"
+          >
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+          </button>
+        )}
         <button
           onClick={handleReset}
           className="p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur rounded-xl shadow-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
